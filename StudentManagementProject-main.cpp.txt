@@ -1,0 +1,245 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct Student {
+    string name;
+    int id;
+    double mark;
+};
+
+// دالة لإضافة طالب
+void addStudent(vector<Student>& students) {
+    Student s;
+    while (true) {
+        cout << "Enter student name (or type 'stop' to finish): ";
+        cin.ignore(); // تفريغ البافر قبل getline
+        getline(cin, s.name);
+        if (s.name == "stop")
+            break;
+        cout << "Enter student ID: ";
+        cin >> s.id;
+        cout << "Enter student mark: ";
+        cin >> s.mark;
+        students.push_back(s);
+    }
+}
+
+// دالة لعرض جميع الطلاب
+void displayStudents(const vector<Student>& students) {
+    if (students.empty()) {
+        cout << "No students to display.\n";
+        return;
+    }
+    for (int i = 0; i < students.size(); ++i) {
+        cout << "Student " << i + 1 << ":\n";
+        cout << "Name: " << students[i].name << "\n";
+        cout << "ID: " << students[i].id << "\n";
+        cout << "Mark: " << students[i].mark << "\n";
+        cout << "----------------------------\n";
+    }
+}
+
+// دالة لحذف طالب بناءً على ID
+void deleteStudent(vector<Student>& students) {
+    if (students.empty()) {
+        cout << "No students to delete.\n";
+        return;
+    }
+    int targetId;
+    cout << "Enter student ID to delete: ";
+    cin >> targetId;
+    bool found = false;
+    for (auto it = students.begin(); it != students.end(); ++it) {
+        if (it->id == targetId) {
+            students.erase(it);
+            found = true;
+            cout << "Student with ID " << targetId << " deleted.\n";
+            break;
+        }
+    }
+    if (!found) {
+        cout << "Student not found.\n";
+    }
+}
+
+// دالة لحساب المعدل
+void calculateAverage(const vector<Student>& students) {
+    if (students.empty()) {
+        cout << "No students to calculate average.\n";
+        return;
+    }
+    double sum = 0;
+    for (const auto& s : students) {
+        sum += s.mark;
+    }
+    cout << "Average mark: " << sum / students.size() << "\n";
+}
+
+// دالة للبحث عن طالب
+void searchStudent(const vector<Student>& students) {
+    if (students.empty()) {
+        cout << "No students.\n";
+        return;
+    }
+    cout << "Enter how you want to search:\n";
+    cout << "1. Search by name\n";
+    cout << "2. Search by ID\n";
+    int n;
+    cin >> n;
+    bool found = false;
+
+    switch (n) {
+    case 1: {
+        cin.ignore(); // لتفريغ البافر
+        string s;
+        cout << "Enter student name: ";
+        getline(cin, s);
+        for (const auto& student : students) {
+            if (student.name == s) {
+                cout << "Student found:\n";
+                cout << "Name: " << student.name << "\n";
+                cout << "ID: " << student.id << "\n";
+                cout << "Mark: " << student.mark << "\n";
+                found = true;
+                break;
+            }
+        }
+        break;
+    }
+    case 2: {
+        int v;
+        cout << "Enter student ID: ";
+        cin >> v;
+        for (const auto& student : students) {
+            if (student.id == v) {
+                cout << "Student found:\n";
+                cout << "Name: " << student.name << "\n";
+                cout << "ID: " << student.id << "\n";
+                cout << "Mark: " << student.mark << "\n";
+                found = true;
+                break;
+            }
+        }
+        break;
+    }
+    default:
+        cout << "Error: please enter 1 or 2.\n";
+        return;
+    }
+
+    if (!found) {
+        cout << "Student not found.\n";
+    }
+}
+
+void editData(vector<Student>& students) {
+    cout << "Enter 1 to edit name, 2 to edit ID, 3 to edit mark:\n";
+    int b;
+    cin >> b;
+    cin.ignore();
+    bool flag = false;
+
+    switch (b) {
+        case 1: {
+            string oldName, newName;
+            cout << "Enter old name: ";
+            getline(cin, oldName);
+            for (auto& s : students) {
+                if (s.name == oldName) {
+                    cout << "Enter new name: ";
+                    getline(cin, newName);
+                    s.name = newName;
+                    flag = true;
+                    break;
+                }
+            }
+            break;
+        }
+
+        case 2: {
+            int oldID, newID;
+            cout << "Enter old ID: ";
+            cin >> oldID;
+            for (auto& s : students) {
+                if (s.id == oldID) {
+                    cout << "Enter new ID: ";
+                    cin >> newID;
+                    s.id = newID;
+                    flag = true;
+                    break;
+                }
+            }
+            break;
+        }
+
+        case 3: {
+            int id;
+            cout << "Enter ID of student to update mark: ";
+            cin >> id;
+            for (auto& s : students) {
+                if (s.id == id) {
+                    cout << "Enter new mark: ";
+                    cin >> s.mark;
+                    flag = true;
+                    break;
+                }
+            }
+            break;
+        }
+
+        default:
+            cout << "Invalid option.\n";
+            return;
+    }
+
+    if (!flag) {
+        cout << "Student not found.\n";
+    }
+}
+
+int main() {
+    vector<Student> students;
+    int choice;
+
+    while (true) {
+        cout << "\n------ Student Management System ------\n";
+        cout << "1. Add Student\n";
+        cout << "2. View All Students\n";
+        cout << "3. Delete Student (by ID)\n";
+        cout << "4. Calculate Grades Average\n";
+        cout << "5. Search Student\n";
+        cout << "6. editData\n";
+        cout << "7. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            addStudent(students);
+            break;
+        case 2:
+            displayStudents(students);
+            break;
+        case 3:
+            deleteStudent(students);
+            break;
+        case 4:
+            calculateAverage(students);
+            break;
+        case 5:
+            searchStudent(students);
+            break;
+        case 6:
+            editData(students);
+            break;
+        case 7:
+            cout << "Exiting program...\n";
+            return 0;
+        default:
+            cout << "Invalid choice. Try again.\n";
+        }
+    }
+
+    return 0;
+}
